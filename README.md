@@ -33,3 +33,18 @@ Our artifact includes the following directories:
 Utilities to get:
 - [ ] 1. Traces from the perspective of middle-boxes
 - [ ] 2. Ground truth of packet loss and timestamps of packets reached the each hop(sender, middle-boxes, receiver)
+
+## Dependencies
+
+We test our code on Ubuntu 22.04.
+The following dependencies need to be installed, required for different components:
+
+```bash
+sudo apt-get install -y mininet python3-pip  # mininet
+sudo apt-get install -y autoconf libtool  # curl
+sudo apt-get install -y cmake libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev  # nginx
+sudo apt-get install -y libnfnetlink-dev  # pepsal
+```
+
+To enable TCP traffic enhancement via `--pep` when running `mininet/run.py`, you need to install `pepsal`. See: https://github.com/CNES/pepsal.git.
+The quiche-based nginx and curl installation scripts are in `apps/http/`.
