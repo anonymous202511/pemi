@@ -1,0 +1,10 @@
+## File system
+.DS_Store
+desktop.ini
+
+## IDE
+.vscode
+
+## Build
+target/
+__pycache__/

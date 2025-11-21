@@ -11,7 +11,7 @@ path = "src/bin/main.rs"
 cycles = []
 
 [dependencies]
-octets = { version = "0.3", path = "../octets" }
+octets = { version = "0.3", path = "deps/octets" }
 nix = {version = "0.29", features = ["socket", "net", "uio"] }
 tokio = { version = "1", features = ["full"] }
 log = "0.4"
