@@ -11,3 +11,6 @@ __pycache__/
 
 ## ssl certificates
 *.pem
+
+# Network traces
+mininet/mahimahi/traces

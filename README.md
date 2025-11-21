@@ -23,11 +23,11 @@ Our artifact includes the following directories:
 - Prototype implementation of PEMI
 
 #### apps/
-- [ ] Example applications.
+- Example applications.
 
 #### mininet/
-- [ ] Mininet-based testbed to evaluate PEMI under various network conditions.
-- [ ] Mahimahi(CellReplay and LeoReplayer) integrated for realistic network emulation.
+- Mininet-based testbed to evaluate PEMI under various network conditions.
+- Mahimahi(CellReplay and LeoReplayer) integrated for realistic network emulation.
 
 #### tools/
 Utilities to get:
@@ -48,3 +48,29 @@ sudo apt-get install -y libnfnetlink-dev  # pepsal
 
 To enable TCP traffic enhancement via `--pep` when running `mininet/run.py`, you need to install `pepsal`. See: https://github.com/CNES/pepsal.git.
 The quiche-based nginx and curl installation scripts are in `apps/http/`.
+
+## Running Tests
+
+After installing dependencies, building PEMI and the used components, you can run the Mininet-based testbed to evaluate PEMI.
+
+Here are some example commands:
+```bash
+# http + mininet(requires nginx and curl built with quiche)
+sudo -E python3 mininet/run.py --loss1 1 http -n 5000k --proto tcp -t 2
+sudo -E python3 mininet/run.py --loss1 1 --pep http -n 5000k --proto tcp -t 2 # requires pepsal
+sudo -E python3 mininet/run.py --loss1 1 http -n 5000k --proto quic -t 2
+sudo -E python3 mininet/run.py --loss1 1 --pemi http -n 5000k --proto quic -t 2
+
+# rtc + mininet
+sudo -E python3 mininet/run.py --loss1 1 quiche_rtc --video-long 20
+sudo -E python3 mininet/run.py --loss1 1 --pemi quiche_rtc --video-long 20
+
+# rtc + mininet + cellular network emulation
+sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi quiche_rtc --video-long 30
+sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi quiche_rtc --video-long 30
+
+# http + mininet + cellular network emulation (note that the GE-model in TC is per-packet driven, goodput affects the state duration, whereas good–bad transitions in real cellular scenarios are typically time-correlated).
+# Compared with the random-loss setting, the GE-model loss events are less frequent (e.g., several consecutive seconds without any loss). As a result, the goodput improvement is smaller; in this configuration the gain is about 1.5×.
+sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml http -n 20000k --proto quic -t 1
+sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi http -n 20000k --proto quic -t 1
+```

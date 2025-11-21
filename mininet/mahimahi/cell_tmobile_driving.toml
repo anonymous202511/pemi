@@ -1,0 +1,12 @@
+mm_bin = "cell"
+disable_tc_client = false
+
+[mm_cell]
+NUM_ARGS = 8
+UP-PACKET-TRAIN-TRACE   = "mininet/mahimahi/traces/CellReplay/tmobile/driving/up-delay-light-pdo"
+DOWN-PACKET-TRAIN-TRACE = "mininet/mahimahi/traces/CellReplay/tmobile/driving/down-delay-light-pdo"
+UP-PDO = "mininet/mahimahi/traces/CellReplay/tmobile/driving/up-heavy-pdo"
+DOWN-PDO = "mininet/mahimahi/traces/CellReplay/tmobile/driving/down-heavy-pdo"
+psize_latency_offset_up = "mininet/mahimahi/traces/CellReplay/tmobile/driving/latency-offset-up"
+psize_latency_offset_down = "mininet/mahimahi/traces/CellReplay/tmobile/driving/latency-offset-down"
+
