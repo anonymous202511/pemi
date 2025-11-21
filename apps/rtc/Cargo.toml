@@ -1,0 +1,22 @@
+[package]
+name = "rtc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+quiche = "0.22.0"
+ring = "0.17"
+log = { version = "0.4", features = ["std"] }
+mio = { version = "0.8", features = ["net", "os-poll"] }
+url = "2.5"
+clap = {version = "4.5", features = ["derive"]}
+env_logger = "0.11"
+
+[lib]
+name = "rtc"
+
+[[bin]]
+name = "rtc_server"
+
+[[bin]]
+name = "rtc_client"
