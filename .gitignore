@@ -8,3 +8,6 @@ desktop.ini
 ## Build
 target/
 __pycache__/
+
+## ssl certificates
+*.pem
