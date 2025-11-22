@@ -353,6 +353,7 @@ class PEMINetwork:
         """
         # clear old files (logs and pcap files)
         pcap_dir = "pcap"
+        os.makedirs(pcap_dir, exist_ok=True)
         self.h1.cmd(f"rm -f {pcap_dir}/h1-eth0.pcap cap_h1.log")
         self.h2.cmd(f"rm -f {pcap_dir}/h2-eth0.pcap cap_h2.log")
         self.r1.cmd(f"rm -f {pcap_dir}/r1-eth0.pcap cap_r1.log")

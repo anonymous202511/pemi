@@ -31,12 +31,23 @@ Our artifact includes the following directories:
 
 #### tools/
 Utilities to get:
-- [ ] 1. Traces from the perspective of middle-boxes
-- [ ] 2. Ground truth of packet loss and timestamps of packets reached the each hop(sender, middle-boxes, receiver)
+- Traces from the perspective of middle-boxes
+- Ground truth of packet loss and timestamps of packets reached the each hop(sender, middle-boxes, receiver)
 
 ## Dependencies
 
 We test our code on Ubuntu 22.04.
+
+### Building PEMI
+
+The prototype implementation of PEMI is in Rust. To build it, you need to install Rust and Cargo first. You can follow the instructions at https://rust-lang.org/tools/install.
+
+After installing Rust and Cargo, you can build PEMI by running the following command:
+```bash
+cargo build --release
+```
+
+### Other Dependencies
 The following dependencies need to be installed, required for different components:
 
 ```bash
