@@ -10,6 +10,6 @@ cd ..
 git clone https://github.com/curl/curl
 cd curl
 autoreconf -fi
-./configure LDFLAGS="-Wl,-rpath,$PWD/../quiche/target/release" --with-openssl=$PWD/../quiche/quiche/deps/boringssl/src --with-quiche=$PWD/../quiche/target/release
+./configure LDFLAGS="-Wl,-rpath,$PWD/../quiche/target/release" --with-openssl=$PWD/../quiche/quiche/deps/boringssl/src --with-quiche=$PWD/../quiche/target/release --with-nghttp2=/usr
 make
 sudo make install

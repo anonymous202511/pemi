@@ -42,6 +42,13 @@ We test our code on Ubuntu 22.04.
 
 The prototype implementation of PEMI is in Rust. To build it, you need to install Rust and Cargo first. You can follow the instructions at https://rust-lang.org/tools/install.
 
+CMake is also required. It could be installed via:
+```bash
+sudo apt update
+sudo apt install cmake -y
+```
+
+
 After installing Rust and Cargo, you can build PEMI by running the following command:
 ```bash
 cargo build --release
@@ -52,7 +59,7 @@ The following dependencies need to be installed, required for different componen
 
 ```bash
 sudo apt-get install -y mininet python3-pip  # mininet
-sudo apt-get install -y autoconf libtool  # curl
+sudo apt-get install -y autoconf libtool libpsl-dev libnghttp2-dev # curl
 sudo apt-get install -y cmake libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev  # nginx
 sudo apt-get install -y libnfnetlink-dev  # pepsal
 ```
@@ -60,9 +67,19 @@ sudo apt-get install -y libnfnetlink-dev  # pepsal
 To enable TCP traffic enhancement via `--pep` when running `mininet/run.py`, you need to install `pepsal`. See: https://github.com/CNES/pepsal.git.
 The quiche-based nginx and curl installation scripts are in `apps/http/`.
 
+If your system has another version of curl, it may interfere with the operation of the quiche-based one. 
+This could be resolved by modifying the `PATH` environment variable, or simply uninstalling the other curl version.
+
+The test scripts and tools also need some Python3 dependencies. You can install them via:
+```bash
+pip3 install -r requirements.txt
+```
+
 ## Running Tests
 
 After installing dependencies, building PEMI and the used components, you can run the Mininet-based testbed to evaluate PEMI.
+
+If the dependencies are installed in a virtual environment created by `venv` or `conda`, you need to use the corresponding `python3` — for example, switch to using the one located in the specific bin directory.
 
 Here are some example commands:
 ```bash
