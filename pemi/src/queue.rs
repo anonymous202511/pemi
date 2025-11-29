@@ -16,7 +16,7 @@ const FLOWLET_MAX_PKTS: usize = 100;
 
 /// eliciting_threshold setting
 const DEFAULT_ELICITING_THRESHOLD: u8 = 1;
-const WHEN_MEASURE_ELICITING_THRESHOLD: u64 = 50; // when there are enough packets, measure the eliciting threshold
+const WHEN_MEASURE_ELICITING_THRESHOLD: u64 = 50; // measure the eliciting threshold for every WHEN_MEASURE_ELICITING_THRESHOLD packets
 const THRESHOLD_FOR_1_ELICITING_THRESHOLD: f64 = 0.6; // if reply ratio > this value, set eliciting threshold as 1; else set as 2
 
 /// Duration ratio threshold to decide whether the lost pkts are not edge pkts; this decide the used RTT for sent-reply matching, and whether we use the RTT samples from a flowlet.
@@ -535,20 +535,23 @@ impl PacketQueue {
         }
     }
 
+    // Measure the eliciting threshold.
+    // Called every WHEN_MEASURE_ELICITING_THRESHOLD packets.
+    // Continuous measurement is necessary because:
+    // 1.Even in one-directional transfering applications, there can still be bursts of bidirectional packets in certain phases (e.g., the initial request phase).
+    // 2.When the latency is large, the arrival of reply packets can be significantly delayed.
     fn measure_eliciting_threshold(&mut self) {
-        // subtract the handshake packet
-        if self.reply_nums - 1
-            < (self.processed as f64 * THRESHOLD_FOR_1_ELICITING_THRESHOLD) as u64
-        {
+        if self.reply_nums < (self.processed as f64 * THRESHOLD_FOR_1_ELICITING_THRESHOLD) as u64 {
             self.eliciting_threshold = 2;
         } else {
             self.eliciting_threshold = 1;
         }
 
-        info!(
-            "🎯 Eliciting threshold measured: {} (client pkts num: {})",
+        debug!(
+            "🎯 Eliciting threshold measured: {} (client pkts num: {}, ratio: {})",
             self.eliciting_threshold,
-            self.reply_nums - 1
+            self.reply_nums,
+            (self.reply_nums) as f64 / self.processed as f64
         );
     }
 
@@ -570,7 +573,7 @@ impl PacketQueue {
 
         // new packet number
         self.processed += 1;
-        if self.processed == WHEN_MEASURE_ELICITING_THRESHOLD {
+        if self.processed % WHEN_MEASURE_ELICITING_THRESHOLD == 0 {
             self.measure_eliciting_threshold();
         }
         // the packets in the queue should not be too many
