@@ -2,6 +2,14 @@ import sys
 import time
 
 
+# Disable segmentation offloading on all hosts in the Mininet network
+def disable_segmentation_offload(net):
+    for h in net.hosts:
+        for intf in h.intfNames():
+            pemilog(f"Disabling offloading on {h.name}:{intf}")
+            h.cmd(f"ethtool --offload {intf} gso off tso off gro off lro off")
+
+
 def mac(digit):
     assert 0 <= digit < 10
     return f"00:00:00:00:00:0{int(digit)}"

@@ -102,6 +102,9 @@ class PEMINetwork:
         popen(self.h1, "ip route add default via 10.0.1.1")  # client
         popen(self.h2, "ip route add default via 10.0.2.1")  # server
 
+        # Disable offloading(TSO,GSO,etc.). They behave unexpectedly in this mininet net: result in oversized TCP/UDP packets being transmitted without MTU-based segmentation.
+        disable_segmentation_offload(self.net)
+
         # Need to set MTU when using Mahimahi (or the tests will fail)
         if self.client_mm_prefix != "":
             self.h2.cmdPrint("ip link set dev h2-eth0 mtu 1380")
