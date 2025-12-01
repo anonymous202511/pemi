@@ -13,7 +13,7 @@ from mininet.cli import CLI
 import time
 
 
-def monitor_func(args):
+def monitor_func(args, net):
     if args.iperf_r1 is not None:
         net.run_iperf(args.iperf_r1, host="r1")
     elif args.iperf is not None:
@@ -27,13 +27,33 @@ def monitor_func(args):
         net.run_ping()
 
 
-def quiche_rtc_func(args):
+def quinn_goodput_func(args, net):
+    net.start_quinn_goodput_server(args.log_level)
+    net.start_quinn_goodput_client(args.log_level, args.size)
+
+
+def quinn_rtc_func(args, net):
+    net.start_quinn_rtc_server(args.log_level)
+    net.start_quinn_rtc_client(args.log_level, args.video_long)
+
+
+def quicgo_goodput_func(args, net):
+    net.start_quicgo_goodput_server(args.log_level)
+    net.start_quicgo_goodput_client(args.log_level, args.size)
+
+
+def quicgo_rtc_func(args, net):
+    net.start_quicgo_rtc_server(args.log_level)
+    net.start_quicgo_rtc_client(args.log_level, args.video_long)
+
+
+def quiche_rtc_func(args, net):
     start_time = time.time()
     net.start_quiche_rtc_server(args.log_level, start_time)
     net.start_quiche_rtc_client(args.log_level, start_time, args.video_long)
 
 
-def http_func(args):
+def http_func(args, net):
     net.start_webserver()
     # client
     if args.timeout:
@@ -206,6 +226,52 @@ monitor.add_argument(
     metavar="TIME_S",
     help="Run an iperf test to measure the maximum bandwidth between h1 and h2.",
 )
+############################################################################
+# QUIC(quinn stack) goodput bench: quinn client - switch - quinn server
+quinn_goodput = subparsers.add_parser("quinn_goodput", help="QUIC(quinn) goodput bench")
+quinn_goodput.set_defaults(func=quinn_goodput_func)
+quinn_goodput.add_argument(
+    "--size",
+    type=int,
+    default=1000,
+    metavar="KB",
+    help="Size of the request in KB (default: 1000)",
+)
+
+############################################################################
+# RTC(quinn): dummy media app based on quinn stack
+quinn_rtc = subparsers.add_parser("quinn_rtc", help="RTC dummy app based on quinn")
+quinn_rtc.set_defaults(func=quinn_rtc_func)
+quinn_rtc.add_argument(
+    "--video-long",
+    type=int,
+    default=10,
+    help="Video time in seconds, default: 10",
+)
+
+############################################################################
+# QUIC(quicgo stack) goodput bench: quicgo client - switch - quicgo server
+quicgo_goodput = subparsers.add_parser(
+    "quicgo_goodput", help="QUIC(quicgo) goodput bench"
+)
+quicgo_goodput.set_defaults(func=quicgo_goodput_func)
+quicgo_goodput.add_argument(
+    "--size",
+    type=int,
+    default=1000,
+    metavar="KB",
+    help="Size of the request in KB (default: 1000)",
+)
+############################################################################
+# RTC(quicgo): dummy media app based on quicgo stack
+quicgo_rtc = subparsers.add_parser("quicgo_rtc", help="RTC dummy app based on quicgo")
+quicgo_rtc.set_defaults(func=quicgo_rtc_func)
+quicgo_rtc.add_argument(
+    "--video-long",
+    type=int,
+    default=10,
+    help="Video time in seconds, default: 10",
+)
 
 ############################################################################
 # RTC: dummy media app based on quiche stack
@@ -278,7 +344,7 @@ if __name__ == "__main__":
 
     # start packet capture
     if args.cap:
-        net.start_capture(args)
+        net.start_capture(args, net)
 
     # start the pemi
     if args.pep:
@@ -288,7 +354,7 @@ if __name__ == "__main__":
             args.log_level, args.fl_inv_factor, args.fl_end_factor, args.pemi_proxy_only
         )
     try:
-        args.func(args)
+        args.func(args, net)
     except Exception as e:
         pemilog(f"[Error] error occurred: {e}")
         net.stop()

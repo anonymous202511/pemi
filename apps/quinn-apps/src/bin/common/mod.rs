@@ -1,8 +1,8 @@
+#![allow(unused)]
+
 use std::time;
+use tracing::debug;
 
-use log::debug;
-
-pub const HTTP_REQ_STREAM_ID: u64 = 0;
 pub const MAX_DATAGRAM_SIZE: usize = 1350;
 
 pub fn print_bytes(bytes: usize) -> String {
@@ -140,8 +140,6 @@ impl Stats {
         );
     }
 }
-
-#[derive(Debug, Clone)]
 pub struct PeerTime {
     start_time: time::SystemTime,
 }

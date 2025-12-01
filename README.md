@@ -1,5 +1,25 @@
 # PEMI: Transparent Performance Enhancements for QUIC
 
+## New Update!
+
+We have evaluated PEMI with **quinn** and **quic-go**. The tested new applications have been added to the `apps/quinn-apps` and `apps/quicgo-apps` directories, along with updated test scripts such as `mininet/run.py`. Below are some result figures; full results can be found in [other_stacks_report/other_stacks_report.md](other_stacks_report/other_stacks_report.md).
+
+For each stack, we tested two applications: a simple goodput test application, and a dummy RTC application that sends frames.
+
+The following two figures were generated under the same settings:  
+`loss1 = 1%, RTT1 = 2 ms, BW1 = 100 Mbps, loss2 = 0%, RTT2 = 50 ms, BW2 = 10 Mbps`.
+
+- Goodput test with the quinn-based/quic-go-based data transfer application  
+
+  <img src="other_stacks_report/other_stacks_goodput_loss1.png" alt="other_stacks_goodput" width="250"/>
+
+- RTC test with the quinn-based/quic-go-based dummy RTC application  
+
+  <img src="other_stacks_report/other_stacks_frame_delay.png" alt="other_stacks_rtc" width="250"/>
+
+
+
+
 ## Key Insight
 
 PEMI runs on middleboxes and infers QUIC losses to provide fast retransmissions. This is normally impossible because QUIC encrypts both packet numbers and ACK frames. PEMI’s key insight is that many network traffic exhibits locality: packets naturally form flowlets. By leveraging this locality, PEMI can narrow down the set of sent packets that a returning packet most likely corresponds to, and then detect losses.
@@ -63,6 +83,8 @@ sudo apt-get install -y autoconf libtool libpsl-dev libnghttp2-dev # curl
 sudo apt-get install -y cmake libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev  # nginx
 sudo apt-get install -y libnfnetlink-dev  # pepsal
 ```
+
+The quic-go-based applications(`apps/quicgo-apps`) need Go (we test with version 1.25.4).
 
 To enable TCP traffic enhancement via `--pep` when running `mininet/run.py`, you need to install `pepsal`. See: https://github.com/CNES/pepsal.git.
 The quiche-based nginx and curl installation scripts are in `apps/http/`.

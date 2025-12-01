@@ -350,6 +350,108 @@ class PEMINetwork:
             f"RUST_LOG={log_level} {self.client_mm_prefix}./target/release/rtc_client {start_time} http://{self.h2.IP()}:4433 {frames} &> c1.log{self.client_mm_suffix}"
         )
 
+    def start_quinn_goodput_server(self, log_level):
+        """
+        Start the server on h2. Make sure the server is ready before returning.
+        """
+        pemilog("Starting the server on h2...")
+        # clear the log file
+        self.h2.cmd("rm -f s1.log")
+        self.h2.cmdPrint(
+            f"RUST_LOG={log_level} ./apps/quinn-apps/target/release/quinn-goodput-server ./ --listen {self.h2.IP()}:4433 &> s1.log &"
+        )
+        while True:
+            try:
+                with open("s1.log", "r") as f:
+                    if "Listening on" in f.read():
+                        return
+            except FileNotFoundError:
+                pass  # file not created yet
+            time.sleep(0.1)
+
+    def start_quinn_goodput_client(self, log_level, request_kb=10):
+        pemilog("Starting the client on h1...")
+        self.h1.cmdPrint(
+            f"RUST_LOG={log_level}  {self.client_mm_prefix} ./apps/quinn-apps/target/release/quinn-goodput-client http://{self.h2.IP()}:4433 --host localhost --request-kb {request_kb} 2> c1.log{self.client_mm_suffix}"
+        )
+
+    def start_quinn_rtc_server(self, log_level):
+        """
+        Start the server on h2. Make sure the server is ready before returning.
+        """
+        pemilog("Starting the server on h2...")
+        # clear the log file
+        self.h2.cmd("rm -f s1.log")
+        self.h2.cmdPrint(
+            f"RUST_LOG={log_level} ./apps/quinn-apps/target/release/quinn-rtc-server --listen {self.h2.IP()}:4433 &> s1.log &"
+        )
+        while True:
+            try:
+                with open("s1.log", "r") as f:
+                    if "Listening on" in f.read():
+                        return
+            except FileNotFoundError:
+                pass  # file not created yet
+            time.sleep(0.1)
+
+    def start_quinn_rtc_client(self, log_level, video_long=10):
+        frames = 30 * video_long
+        pemilog("Starting the client on h1...")
+        self.h1.cmdPrint(
+            f"RUST_LOG={log_level} {self.client_mm_prefix}./apps/quinn-apps/target/release/quinn-rtc-client http://{self.h2.IP()}:4433 --host localhost --request-frames {frames} &> c1.log{self.client_mm_suffix}"
+        )
+
+    def start_quicgo_goodput_server(self, log_level):
+        """
+        Start the server on h2. Make sure the server is ready before returning.
+        """
+        pemilog("Starting the server on h2...")
+        # clear the log file
+        self.h2.cmd("rm -f s1.log")
+        self.h2.cmdPrint(
+            f"./apps/quicgo-apps/quic-go-goodput/server/server -p {self.h2.IP()}:4433 &> s1.log &"
+        )
+        while True:
+            try:
+                with open("s1.log", "r") as f:
+                    if "running on" in f.read():
+                        return
+            except FileNotFoundError:
+                pass  # file not created yet
+            time.sleep(0.1)
+
+    def start_quicgo_goodput_client(self, log_level, request_kb=10):
+        pemilog("Starting the client on h1...")
+        self.h1.cmdPrint(
+            f"{self.client_mm_prefix} ./apps/quicgo-apps/quic-go-goodput/client/client -p {self.h2.IP()}:4433 -n {request_kb} 2> c1.log{self.client_mm_suffix}"
+        )
+
+    def start_quicgo_rtc_server(self, log_level):
+        """
+        Start the server on h2. Make sure the server is ready before returning.
+        """
+        pemilog("Starting the server on h2...")
+        # clear the log file
+        self.h2.cmd("rm -f s1.log")
+        self.h2.cmdPrint(
+            f"./apps/quicgo-apps/quic-go-rtc/server/server -p {self.h2.IP()}:4433 &> s1.log &"
+        )
+        while True:
+            try:
+                with open("s1.log", "r") as f:
+                    if "running on" in f.read():
+                        return
+            except FileNotFoundError:
+                pass  # file not created yet
+            time.sleep(0.1)
+
+    def start_quicgo_rtc_client(self, log_level, video_long=10):
+        frames = 30 * video_long
+        pemilog("Starting the client on h1...")
+        self.h1.cmdPrint(
+            f"{self.client_mm_prefix} ./apps/quicgo-apps/quic-go-rtc/client/client -p {self.h2.IP()}:4433 -f {frames} &> c1.log{self.client_mm_suffix}"
+        )
+
     def start_capture(self, args):
         """
         Start capturing packets on all nodes.

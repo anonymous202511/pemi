@@ -1,0 +1,3 @@
+[submodule "apps/quinn-apps/deps/quinn"]
+	path = apps/quinn-apps/deps/quinn
+	url = git@github.com:anonymous202511/quinn.git

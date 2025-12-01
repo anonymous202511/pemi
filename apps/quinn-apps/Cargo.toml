@@ -1,0 +1,42 @@
+[package]
+name = "quinn-apps"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+quinn = { package = "quinn", path = "deps/quinn/quinn", version = "0.12.0", features = ["runtime-tokio"]}
+# quinn = { version = "0.11.9", features = ["runtime-tokio"] }
+rustls = { version = "0.23.5", default-features = false, features = ["std"] , optional = true }
+rcgen = "0.14"
+anyhow = "1.0.22"
+clap = { version = "4", features = ["derive"] }
+tracing = { version = "0.1.10", default-features = false, features = ["std","log"] }
+tracing-futures = { version = "0.2.0", default-features = false, features = ["std-future"] }
+tracing-subscriber = { version = "0.3.0", default-features = false, features = ["env-filter", "fmt", "ansi", "time", "local-time"] }
+tokio = { version = "1.28.1", features = ["sync", "rt", "rt-multi-thread", "time", "macros"] }
+directories-next = "2"
+url = "2"
+env_logger = "0.11"
+
+[lib]
+name = "quinn_apps"
+
+[[bin]]
+name = "quinn-goodput-server"
+required-features = ["rustls-ring"]
+
+[[bin]]
+name = "quinn-goodput-client"
+required-features = ["rustls-ring"]
+
+[features]
+default = ["rustls-ring"]
+# Enable rustls with the `aws-lc-rs` crypto provider
+rustls-aws-lc-rs = ["dep:rustls", "aws-lc-rs", "quinn/rustls-aws-lc-rs", "quinn/aws-lc-rs"]
+# Enable rustls with the `ring` crypto provider
+rustls-ring = ["dep:rustls", "ring", "quinn/rustls-ring", "quinn/ring"]
+# Enables `Endpoint::client` and `Endpoint::server` conveniences
+aws-lc-rs = ["quinn/aws-lc-rs"]
+# Enable the `ring` crypto provider.
+# Outside wasm*-unknown-unknown targets, this enables `Endpoint::client` and `Endpoint::server` conveniences.
+ring = ["quinn/ring"]
