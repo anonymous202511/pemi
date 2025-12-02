@@ -44,8 +44,8 @@ Each experiment ran for 20 seconds and was repeated 10 times.
 
    <img src="other_stacks_frame_delay.png" alt="other_stacks_frame_delay" width="300"/>
 
-2. **Jitter**: for quinn, the 90% percentile decreases from 209.8 ms to 87.4 ms (a 58.3% reduction). However, the 50% percentile jitter increases from 0.05 ms to 12.8 ms, though it remains small.
-    For quic-go, the 90% percentile decreases from 52.5 ms to 39.4 ms (a 25.0% reduction), and the 50% percentile decreases from 14.3 ms to 7.6 ms (a 46.7% reduction).
+2. **Frame-level Jitter**: for quinn, the 50% percentile decreases from 54.3 ms to 21.0 ms (a 61.3% reduction), and the 90% percentile decreases from 87.3 ms to 42.4 ms (a 51.4% reduction).
+    For quic-go, the 50% percentile decreases from 13.3 ms to 7.2 ms (a 45.8% reduction), and the 90% percentile decreases from 27.2 ms to 21.5 ms (a 21.0% reduction).
 
    <img src="other_stacks_jitter.png" alt="other_stacks_jitter" width="300"/>
 
@@ -60,8 +60,9 @@ For quic-go, the tail delay significantly decreases: the 90% percentile decrease
 
    <img src="other_stacks_cellular_frame.png" alt="other_stacks_cellular_frame" width="300"/>
 
-2. **Jitter**: for quinn, after enabling PEMI, the jitter exhibits a moderate increase. For example, the 50% percentile increases from 0.17 ms to 1.82 ms, and the 90% percentile increases from 33.7 ms to 49.5 ms.
-For quic-go, after enabling PEMI, though the median jitter slightly increases from 3.4 ms to 5.6 ms, the tail jitter is significantly reduced: the 99% percentile decreases from 253.7 ms to 140.8 ms (a 44.49% reduction).
+2. **Frame-level Jitter**: 
+for quinn, after enabling PEMI, the 50% percentile decreases from 33.4ms to 21.9ms (a 34.4% reduction). The tail jitter is significantly reduced, with the 99% percentile decreasing from 562.8ms to 170.0ms (a 69.8% reduction).
+For quic-go, after enabling PEMI, the 50% percentile slightly increases from 10.8ms to 11.965ms (a 10.8% increase). However, the tail jitter is observably reduced, with the 99% percentile decreasing from 95.2ms to 60.0ms (a 37.0% reduction).
 
    <img src="other_stacks_cellular_jitter.png" alt="other_stacks_cellular_jitter" width="300"/>
 
@@ -71,7 +72,8 @@ For quic-go, after enabling PEMI, though the median jitter slightly increases fr
 
 In the manuscript(under review), we have shown that PEMI significantly improves quiche-based applications.
 In this report, we show that PEMI achieves clear performance gains on quinn and quic-go as well.
-With PEMI enabled, the goodput of the file-transfer application is improved under loss. The frame delay, especially the tail delay, of the dummy RTC application is significantly reduced in various network settings. The tail jitter is reduced in most cases, though it slightly increases in other cases.
+With PEMI enabled, the goodput of the file-transfer application is improved under loss. 
+As for the dummy RTC application, the frame delay, especially the tail delay, is significantly reduced in various network settings. The frame-level jitter is also clearly reduced.
 
 In addition, we observe that quinn’s performance is generally worse than quic-go’s, regardless of whether PEMI is enabled. This may be because of the implementaion differences, e.g., congestion control algorithms, between the two QUIC stacks.
 Further investigation is required to fully understand the underlying mechanisms behind this performance gap.

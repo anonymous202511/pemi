@@ -122,6 +122,8 @@ sudo -E python3 mininet/run.py --loss1 1 --pemi http -n 5000k --proto quic -t 2
 sudo -E python3 mininet/run.py --loss1 1 quiche_rtc --video-long 20
 sudo -E python3 mininet/run.py --loss1 1 --pemi quiche_rtc --video-long 20
 
+# you could parse the frame-level statistics using mininet/rtc_frame_stats.py, see main function of mininet/rtc_frame_stats.py for example usage.
+
 # rtc + mininet + cellular network emulation
 sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi quiche_rtc --video-long 30
 sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi quiche_rtc --video-long 30
