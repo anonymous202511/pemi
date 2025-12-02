@@ -12,7 +12,9 @@ The `http/` directory provides scripts for compiling these quiche-based versions
 
 ### 2. RTC Frames
 
-We implement dummy media servers and clients using quiche to transmit frames at 30 fps and 3000 kbps. The server generates and sends one frame every 33 ms.
+We implement dummy media servers and clients using quiche to transmit frames at 30 fps and 3000 kbps. The server generates and sends one frame every 33 ms. Each frame is transmitted over a newly created stream.
+
+Other transmission strategies are possible but not explored in this work, such as using a single stream for all frames, grouping multiple frames per stream (e.g., opening a new group for each key frame), or incorporating mechanisms that drop or skip older frames. These alternatives are outside the scope of this study.
 
 ## quinn-based Applications
 
