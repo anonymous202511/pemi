@@ -74,6 +74,15 @@ After installing Rust and Cargo, you can build PEMI by running the following com
 cargo build --release
 ```
 
+### Building applications
+
+The quic-go-based applications(`apps/quicgo-apps`) need Go (we test with version 1.25.4).
+
+Use make to build both PEMI and the applications:
+```bash
+make release
+```
+
 ### Other Dependencies
 The following dependencies need to be installed, required for different components:
 
@@ -83,8 +92,6 @@ sudo apt-get install -y autoconf libtool libpsl-dev libnghttp2-dev # curl
 sudo apt-get install -y cmake libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev  # nginx
 sudo apt-get install -y libnfnetlink-dev  # pepsal
 ```
-
-The quic-go-based applications(`apps/quicgo-apps`) need Go (we test with version 1.25.4).
 
 To enable TCP traffic enhancement via `--pep` when running `mininet/run.py`, you need to install `pepsal`. See: https://github.com/CNES/pepsal.git.
 The quiche-based nginx and curl installation scripts are in `apps/http/`.

@@ -10,6 +10,8 @@ release:
 
 clean:
 	cargo clean
+	cd apps/quinn-apps && cargo clean
+	cd apps/quicgo-apps && make clean
 
 clear:
 	sudo rm -f *.log pcap/*.pcap *.csv
