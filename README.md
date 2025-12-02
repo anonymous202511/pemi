@@ -40,10 +40,10 @@ When these gaps are large enough, a middlebox can more easily match the receiver
 Our artifact includes the following directories:
 
 #### pemi/
-- Prototype implementation of PEMI
+- Prototype implementation of PEMI.
 
 #### apps/
-- Example applications.
+- Example applications based on quiche, quinn, and quic-go.
 
 #### mininet/
 - Mininet-based testbed to evaluate PEMI under various network conditions.
@@ -108,7 +108,10 @@ pip3 install -r requirements.txt
 
 After installing dependencies, building PEMI and the used components, you can run the Mininet-based testbed to evaluate PEMI.
 
-If the dependencies are installed in a virtual environment created by `venv` or `conda`, you need to use the corresponding `python3` — for example, switch to using the one located in the specific bin directory.
+If the dependencies are installed in a virtual environment created by `venv` or `conda`, you need to use the corresponding `python3` — e.g., the one located in the specific bin directory.
+
+The HTTP file transfer and goodput tests will output the results to the stdout.
+For the tests of transferring RTC frames, you could calculate the frame-level statistics by using `mininet/rtc_frame_stats.py`, its main function shows an example.
 
 Here are some example commands:
 ```bash
@@ -118,18 +121,20 @@ sudo -E python3 mininet/run.py --loss1 1 --pep http -n 5000k --proto tcp -t 2 # 
 sudo -E python3 mininet/run.py --loss1 1 http -n 5000k --proto quic -t 2
 sudo -E python3 mininet/run.py --loss1 1 --pemi http -n 5000k --proto quic -t 2
 
+# goodput(simple data transferring) + mininet
+sudo -E python3 mininet/run.py --loss1 1 quinn_goodput --size 1000
+sudo -E python3 mininet/run.py --loss1 1 --pemi quinn_goodput --size 1000
+
 # rtc + mininet
 sudo -E python3 mininet/run.py --loss1 1 quiche_rtc --video-long 20
 sudo -E python3 mininet/run.py --loss1 1 --pemi quiche_rtc --video-long 20
 
-# you could parse the frame-level statistics using mininet/rtc_frame_stats.py, see main function of mininet/rtc_frame_stats.py for example usage.
-
 # rtc + mininet + cellular network emulation
-sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi quiche_rtc --video-long 30
-sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi quiche_rtc --video-long 30
+sudo -E python3 mininet/run.py --delay2 50 --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi quiche_rtc --video-long 30
+sudo -E python3 mininet/run.py --delay2 50 --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi quiche_rtc --video-long 30
 
 # http + mininet + cellular network emulation (note that the GE-model in TC is per-packet driven, goodput affects the state duration, whereas good–bad transitions in real cellular scenarios are typically time-correlated).
-# Compared with the random-loss setting, the GE-model loss events are less frequent (e.g., several consecutive seconds without any loss). As a result, the goodput improvement is smaller; in this configuration the gain is about 1.5×.
-sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml http -n 20000k --proto quic -t 1
-sudo -E python3 mininet/run.py --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi http -n 20000k --proto quic -t 1
+# Compared with the random-loss setting, the GE-model loss events are less frequent (e.g., several consecutive seconds without any loss). As a result, the goodput improvement may be smaller.
+sudo -E python3 mininet/run.py --delay2 50 --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml http -n 20000k --proto quic -t 1
+sudo -E python3 mininet/run.py --delay2 50 --loss1ge 0.08 8 100 0 --loss-seed 1 --mm-config mininet/mahimahi/cell_tmobile_driving.toml --pemi http -n 20000k --proto quic -t 1
 ```
