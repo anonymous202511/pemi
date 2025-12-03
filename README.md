@@ -78,6 +78,10 @@ cargo build --release
 
 The quic-go-based applications(`apps/quicgo-apps`) need Go (we test with version 1.25.4).
 
+Quinn does not expose its UDP packet sending/receiving to applications. 
+To support log-based analysis (see `tools/README.md` for details), we modified quinn to add per-packet id and timestamp logging.
+This implementation needs to be located under `apps/quinn-apps/deps`, and can be obtained via a Git command for fetching submodules (e.g., `git submodule update --init --recursive`).
+
 Use make to build both PEMI and the applications:
 ```bash
 make release
