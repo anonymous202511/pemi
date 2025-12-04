@@ -13,7 +13,7 @@ fi
 
 # only need to run once
 init () {
-   curl -O https://nginx.org/download/nginx-1.16.1.tar.gz
+   wget https://nginx.org/download/nginx-1.16.1.tar.gz
    tar xzvf nginx-1.16.1.tar.gz
    git clone --recursive https://github.com/anonymous202511/quiche-nginx.git
    mv quiche-nginx quiche
