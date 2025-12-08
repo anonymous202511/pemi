@@ -10,3 +10,13 @@ In addition, CellReplay must be executed under a normal (non-root) user account,
 
 For CellReplay installation, refer to: https://github.com/williamsentosa95/cellreplay  
 For LeoReplayer installation, refer to: https://github.com/SpaceNetLab/LeoCC
+
+## Configuring the Trace-driven Emulators
+
+Because the parameters for CellReplay and LeoReplayer are relatively complex, we use `.toml` files to configure them—primarily to specify the datasets being used.  
+The required parameters and available datasets for each emulator can be found at:
+
+1. https://github.com/williamsentosa95/cellreplay  
+2. https://github.com/SpaceNetLab/LeoCC
+
+Please download and place the trace files in the same directories as the ones provided in `.toml` file. You can then enable the trace-drive experiment by specifying the corresponding `.toml` file, e.g., `--mm-config mininet/mahimahi/cell_tmobile_driving.toml`.

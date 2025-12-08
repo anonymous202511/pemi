@@ -86,6 +86,33 @@ Use make to build both PEMI and the applications:
 ```bash
 make release
 ```
+### Testing environment dependencies
+#### `tc` version
+Older versions of iproute may not support gemodel or loss seed. 
+You can check your iproute version using :
+```bash
+tc -V
+
+# the output of our testbed is:
+tc utility, iproute2-6.17.0
+```
+
+If necessary, update iproute to newer version.
+For example, you can build and install iproute2-6.17.0 from source as follows:
+```bash
+sudo apt update
+sudo apt install -y build-essential git bison flex libelf-dev libmnl-dev libcap-dev pkg-config
+mkdir -p ~/iproute2-build && cd ~/iproute2-build
+wget https://mirrors.edge.kernel.org/pub/linux/utils/net/iproute2/iproute2-6.17.0.tar.xz
+tar -xvf iproute2-6.17.0.tar.xz && cd iproute2-6.17.0
+./configure --prefix=/usr --sbindir=/sbin
+make -j$(nproc)
+sudo make install
+```
+
+#### Trace-driven network emulation
+
+Some of tests execute the client application via the shell provided by CellReplay and LeoReplayer (network emulators derived from Mahimahi). Please check `mininet/` for installation and setup instructions.
 
 ### Other Dependencies
 The following dependencies need to be installed, required for different components:
